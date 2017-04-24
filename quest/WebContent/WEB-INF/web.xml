@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">	
+    <servlet>
+		<servlet-name>Start</servlet-name>
+		<servlet-class>com.location.Start</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Start</servlet-name>
+		<url-pattern>/Start</url-pattern>
+	</servlet-mapping>
+	
+	 <servlet>
+		<servlet-name>Failed</servlet-name>
+		<servlet-class>com.location.Failed</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Failed</servlet-name>
+		<url-pattern>/Failed</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuestId</servlet-name>
+		<servlet-class>com.location.QuestId</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuestId</servlet-name>
+		<url-pattern>/QuestId</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Next</servlet-name>
+		<servlet-class>com.location.Next</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Next</servlet-name>
+		<url-pattern>/Next</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>UserId</servlet-name>
+		<servlet-class>com.location.UserId</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserId</servlet-name>
+		<url-pattern>/UserId</url-pattern>
+	</servlet-mapping>
+	
+    <servlet>
+		<servlet-name>Arrived</servlet-name>
+		<servlet-class>com.location.Arrived</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Arrived</servlet-name>
+		<url-pattern>/arrived</url-pattern>
+	</servlet-mapping>
+		
+	 <servlet>
+		<servlet-name>Answer</servlet-name>
+		<servlet-class>com.location.Answer</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Answer</servlet-name>
+		<url-pattern>/Answer</url-pattern>
+	</servlet-mapping>
+		
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	
+	
+	<servlet>
+		<servlet-name>Latitude</servlet-name>
+		<servlet-class>com.dynamic.Latitude</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Latitude</servlet-name>
+		<url-pattern>/Latitude</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Longitude</servlet-name>
+		<servlet-class>com.dynamic.Longitude</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Longitude</servlet-name>
+		<url-pattern>/Longitude</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuestionsDone</servlet-name>
+		<servlet-class>com.dynamic.QuestionsDone</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuestionsDone</servlet-name>
+		<url-pattern>/QuestionsDone</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuestionsAmount</servlet-name>
+		<servlet-class>com.dynamic.QuestionsAmount</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuestionsAmount</servlet-name>
+		<url-pattern>/QuestionsAmount</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>QuestionQuestion</servlet-name>
+		<servlet-class>com.dynamic.QuestionQuestion</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>QuestionQuestion</servlet-name>
+		<url-pattern>/QuestionQuestion</url-pattern>
+	</servlet-mapping>
+</web-app>

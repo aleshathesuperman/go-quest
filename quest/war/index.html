@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Quest</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  	<script src="https://code.jquery.com/jquery-latest.min.js"></script>  
+  </head>
+  <body>
+  
+    <div id="info"></div>
+	<div><p><span id="questions-done"></span> / <span id="questions-amount"></span></p></div>
+    <script>
+     $(document).ready(function()
+    		 { 
+   		$.ajax({ 
+    		url: '/UserId', 
+    		type: 'GET',
+			data : {id: getParameterByName('key1', window.location.href)}, 
+    		async: false, 		
+    	});});
+     
+     $(document).ready(function()
+    		 { 
+   		$.ajax({ 
+    		url: '/QuestId', 
+    		type: 'GET',
+			data : {id: getParameterByName('key2', window.location.href)}, 
+    		async: false, 
+    	});});
+     $(document).ready(function(){ $.get("/Start",{id: getParameterByName('key1', window.location.href)},function(data){$('#info').html(data);});});
+     $(document).ready(function(){ $.get("/QuestionsDone",{},function(data){$('#questions-done').html(data);});}); 
+     $(document).ready(function(){ $.get("/QuestionsAmount",{},function(data){$('#questions-amount').html(data);});}); 
+	</script>
+    <script>
+     	function getParameterByName(name, url) {
+		    if (!url) url = window.location.href;
+		    name = name.replace(/[\[\]]/g, "\\$&");
+		    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+		        results = regex.exec(url);
+		    if (!results) return null;
+		    if (!results[2]) return '';
+		    return decodeURIComponent(results[2].replace(/\+/g, " "));
+		}
+     </script>
+    <input type="button" value="On place" id="arr_call_back" onclick="arrived()">  	
+    <div id="question-form" style="display: none;">
+    	<div><h2 id="question-current"></h2></div>
+        <input type="text" name="answer" id="answ_call_back">
+    	<input type="button" value="Answer" onclick="answer()">
+	</div>
+	  <hr>
+    <div id="map" style=" height: 500px; width: 500px;"></div> 
+  
+    <script>
+	function arrived()
+	{
+		if (navigator.geolocation) {
+	   		  console.log('Geolocation is supported!');
+	   		}
+	   		else {
+	   		  console.log('Geolocation is not supported for this Browser/OS version yet.');
+	   		}
+	   		var geoSuccess = function(position) {
+   				var startPos = position;
+	   			$.get(
+   					"/arrived", 
+   					{
+   						latitude: startPos.coords.latitude,
+   						longitude: startPos.coords.longitude
+   					},	   					
+					function(data)
+					{
+   						if(data == "true")
+   						{
+   							alert("Okay, answer the question please!");
+   							$('#arr_call_back').css('display', 'none');
+   							$.ajax({ url: '/QuestionQuestion', type: 'GET', async: false, success: function (data) {$('#question-current').html(data);}});
+   							$('#question-form').css('display', 'block');						
+   						}
+   						else if(data == "false")
+						{
+   							alert("Not in place yet!");
+   							$('#arr_call_back').fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+						}
+					}	
+				);  			
+			};	   		
+	   		var geoError = function(error) {
+	   		    console.log('Error occurred. Error code: ' + error.code);
+	   		};	   		
+	   		var geoOptions = { enableHighAccuracy: true };
+	   		navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);	
+	}
+	</script>
+
+    <hr>
+    <input type="button" value="Restart" onclick="tryagain()">
+     
+ <script>
+ 	function tryagain()
+ 	{
+ 		$.ajax({ url: '/FromStart', type: 'GET', async: false});
+ 	    $.get("/QuestionsDone",{},function(data){$('#questions-done').html(data);});
+ 	    $.get("/QuestionsAmount",{},function(data){$('#questions-amount').html(data);});
+ 	   	$('#question-form').css('display', 'none');	 
+ 	   	$('#answ_call_back').val("");
+		var latitiude;
+  	  	var longitude;
+		$.ajax({ url: '/Latitude', type: 'GET', async: false, success: function (data) {latitiude = data;}});
+		$.ajax({ url: '/Longitude', type: 'GET', async: false, success: function (data) {longitude = data;}}); 
+		changeMap(latitiude, longitude);
+		$('#arr_call_back').css('display', 'block');
+ 	}
+ </script>
+    
+    <script>
+    function answer()
+    { 
+    	$.ajax({ 
+    		url: '/Answer', 
+    		type: 'GET',
+			data : {answer: $('#answ_call_back').val()}, 
+    		async: false, 
+    		success: function (data) 
+    		{
+    			if(data == "true")
+   				{
+    				$.ajax({ url: '/Next', type: 'GET', async: false, success: 
+    					function (data) 
+    					{
+    						if(data == "false")
+   							{
+    							alert("You did it!")
+    							$.ajax({ url: '/FromStart', type: 'GET', async: false});
+    							$.ajax({ url: '/Complete', type: 'GET', async: false, success: function (data) {window.location.replace(data);}});
+   							}
+    						else
+    						{
+    							alert("Go on!")
+    							$('#question-form').css('display', 'none');	   	
+    							$('#answ_call_back').val("");
+    							var latitiude;
+    					   	  	var longitude;
+    							$.ajax({ url: '/Latitude', type: 'GET', async: false, success: function (data) {latitiude = data;}});
+    							$.ajax({ url: '/Longitude', type: 'GET', async: false, success: function (data) {longitude = data;}}); 
+    							changeMap(latitiude, longitude);
+    							$.get("/QuestionsDone",{},function(data){$('#questions-done').html(data);}) 
+    			     			$.get("/QuestionsAmount",{},function(data){$('#questions-amount').html(data);}) 
+       							$('#arr_call_back').css('display', 'block');
+    						}
+   						}
+    				});
+   				}
+    			else
+   				{	
+    				alert("Wrong answer, you lose")
+    				$.ajax({ url: '/Failed', type: 'GET', async: false, success: function (data) {window.location.replace(data);}});
+   				}
+    		}
+    	});
+    }
+    </script>
+    
+    <script>
+	 function changeMap(lat, lng) 
+	 {
+		var latlng = new google.maps.LatLng(lat, lng);
+	    marker.setPosition(latlng);
+	    map.panTo(latlng);
+	 }
+	</script>
+	<script>
+		
+	</script>
+    <script>
+      var marker;
+      var map;
+      function initMap() { 	
+   	  	var latitiude;
+   	  	var longitude;
+		$.ajax({ url: '/Latitude', type: 'GET', async: false, success: function (data) {latitiude = data;}});
+		$.ajax({ url: '/Longitude', type: 'GET', async: false, success: function (data) {longitude = data;}});   	
+        var uluru = {lat: parseFloat(latitiude), lng: parseFloat(longitude)};
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
+          center: uluru
+        });
+        marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+    </script>
+    <script defer
+   	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAemSVT-gnTxYy3pfVPgt-QmnaQBFNOyxE&callback=initMap">
+    </script>
+    
+  </body>
+</html>
