@@ -13,8 +13,13 @@ import com.location.QuestData;
 @SuppressWarnings("serial")
 public class QuestionsAmount extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {		
+		int userid = Integer.parseInt(req.getParameter("userid"));
+		int questid = Integer.parseInt(req.getParameter("questid"));	
+		int size = QuestData.User.get(QuestData.map.get(userid)).get(QuestData.qmap.get(QuestData.map.get(userid))
+				.get(questid)).size();
+		
 		PrintWriter out = res.getWriter();
-		out.print(QuestData.quest().size());
+		out.print(size);
 		out.close();
 	}
 }

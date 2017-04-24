@@ -3,9 +3,10 @@ package com.location;
 import java.util.ArrayList;
 
 public class Quest {
-	public Quest(String name, int points, ArrayList<Question> questions)
+	public Quest(int id, String name, int points, ArrayList<Question> questions)
 	{
 		if(questions == null) throw new NullPointerException("Question list is empty"); 
+		_id = id;
 		_name = name;
 		_points = points;
 		_questions = questions;
@@ -32,11 +33,13 @@ public class Quest {
 		_current = 0;
 	}
 	
+	public int id() { return _id; }
 	public String name() { return _name; }
 	public int points() { return _points; }
 	public ArrayList<Question> questions() { return _questions; }
 	public int currentIndex() { return _current; }
 	
+	private int _id;
 	private String _name;
 	private int _points;
 	private ArrayList<Question> _questions;

@@ -41,14 +41,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/Complete</url-pattern>
 	</servlet-mapping>
 	
-	<servlet>
-		<servlet-name>QuestId</servlet-name>
-		<servlet-class>com.location.QuestId</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>QuestId</servlet-name>
-		<url-pattern>/QuestId</url-pattern>
-	</servlet-mapping>
 	
 
 	
@@ -60,15 +52,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Next</servlet-name>
 		<url-pattern>/Next</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>UserId</servlet-name>
-		<servlet-class>com.location.UserId</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>UserId</servlet-name>
-		<url-pattern>/UserId</url-pattern>
-	</servlet-mapping>
+
 	
     <servlet>
 		<servlet-name>Arrived</servlet-name>

@@ -1,0 +1,35 @@
+body{
+	background-color: black;
+	color: white;
+}
+span{
+	color: red;
+}
+#info{
+	padding: 10px;
+}
+#info h1{
+	border-radius: 5px;
+	padding: 5px;
+	border: 1px solid white;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+#map{
+	display: block;
+	margin: 0 auto;
+	min-width: 300px;
+	width: 66%;
+	height: 500px;
+}
+.simple_button{
+	min-height: 40px;
+	min-width: 100px;
+	display: block;
+	margin: 30px auto;
+	background-color: red;
+	border: none;
+	border-radius: 5px;
+	margin-bottom: 10px;
+}

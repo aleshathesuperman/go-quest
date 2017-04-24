@@ -13,7 +13,11 @@ import com.location.QuestData;
 @SuppressWarnings("serial")
 public class Latitude extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {		
-		double lat = QuestData.quest().currentQuestion().latitude();
+		int userid = Integer.parseInt(req.getParameter("userid"));
+		int questid = Integer.parseInt(req.getParameter("questid"));
+		
+		double lat = QuestData.User.get(QuestData.map.get(userid)).get(QuestData.qmap.get(QuestData.map.get(userid))
+						.get(questid)).currentQuestion().latitude();
 		PrintWriter out = res.getWriter();
 		out.print(lat);
 		out.close();

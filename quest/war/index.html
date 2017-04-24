@@ -1,57 +1,105 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-  <head>
+    <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Quest</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   	<script src="https://code.jquery.com/jquery-latest.min.js"></script>  
+    <meta content="telephone=no" name="format-detection" />
+    <meta http-equiv="x-rim-auto-match" content="none">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="bootstrap-grid.min.css" />
+    <link rel="stylesheet" href="main.css" />
+    
+
   </head>
   <body>
   
-    <div id="info"></div>
-	<div><p><span id="questions-done"></span> / <span id="questions-amount"></span></p></div>
-    <script>
-     $(document).ready(function()
-    		 { 
-   		$.ajax({ 
-    		url: '/UserId', 
-    		type: 'GET',
-			data : {id: getParameterByName('key1', window.location.href)}, 
-    		async: false, 		
-    	});});
-     
-     $(document).ready(function()
-    		 { 
-   		$.ajax({ 
-    		url: '/QuestId', 
-    		type: 'GET',
-			data : {id: getParameterByName('key2', window.location.href)}, 
-    		async: false, 
-    	});});
-     $(document).ready(function(){ $.get("/Start",{id: getParameterByName('key1', window.location.href)},function(data){$('#info').html(data);});});
-     $(document).ready(function(){ $.get("/QuestionsDone",{},function(data){$('#questions-done').html(data);});}); 
-     $(document).ready(function(){ $.get("/QuestionsAmount",{},function(data){$('#questions-amount').html(data);});}); 
-	</script>
-    <script>
-     	function getParameterByName(name, url) {
-		    if (!url) url = window.location.href;
-		    name = name.replace(/[\[\]]/g, "\\$&");
-		    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-		        results = regex.exec(url);
-		    if (!results) return null;
-		    if (!results[2]) return '';
-		    return decodeURIComponent(results[2].replace(/\+/g, " "));
-		}
-     </script>
-    <input type="button" value="On place" id="arr_call_back" onclick="arrived()">  	
-    <div id="question-form" style="display: none;">
-    	<div><h2 id="question-current"></h2></div>
-        <input type="text" name="answer" id="answ_call_back">
-    	<input type="button" value="Answer" onclick="answer()">
-	</div>
+  <div class="container">
+      <div class="row">
+       <div id="info"></div>
+      </div>
+    </div>
+	
 	  <hr>
-    <div id="map" style=" height: 500px; width: 500px;"></div> 
-  
+    <div id="map">
+	
+	</div> 
+  <div style="text-align: center;"><p><span id="questions-done"> 0 </span>  / <span id="questions-amount"> 1 </span></p></div>
+    <input class="simple_button" type="button" value="На місці" id="arr_call_back" onclick="arrived()">   
+       
+       <center><div id="question-form" style="display: none;">
+    	<div><h2 id="question-current"></h2></div>
+        <input type="text" name="answer" id="answ_call_back" style="color: black;">
+    	<input class="simple_button" type="button" value="Відповісти" onclick="answer()">
+	</div></center>
+
+    <hr>
+    <input class="simple_button" type="button" value="Рестарт" onclick="tryagain()">
+    
+    
+    <script>
+    function getParameterByName(name, url) {
+	    if (!url) url = window.location.href;
+	    name = name.replace(/[\[\]]/g, "\\$&");
+	    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+	        results = regex.exec(url);
+	    if (!results) return null;
+	    if (!results[2]) return '';
+	    return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+    var ready = false;
+     $(document).ready(function(){
+    	 $.ajax({ 
+     		url: '/Start', 
+     		type: 'GET',
+ 			data : {userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)}, 
+     		async: false, 
+     		success: function(data)
+     		{ $('#info').html(data);}});
+    	 
+    	 $.ajax({ 
+      		url: '/QuestionsDone', 
+      		type: 'GET',
+  			data : {userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)}, 
+      		async: false, 
+      		success: function(data){$('#questions-done').html(data);}});
+    	 $.ajax({ 
+       		url: '/QuestionsAmount', 
+       		type: 'GET',
+   			data : {userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)}, 
+       		async: false, 
+       		success: function(data){$('#questions-amount').html(data);}});  
+    	 initMap();   
+    }
+    
+     );
+     
+	</script>
+	<script defer> 
+      var marker;
+      var map;
+      function initMap() { 	
+   	  	var latitiude;
+   	  	var longitude;
+		$.ajax({ url: '/Latitude', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} ,  async: false, success: function (data) {latitiude = data;}});
+		$.ajax({ url: '/Longitude', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: function (data) {longitude = data;}});   	
+        var uluru = {lat: parseFloat(latitiude), lng: parseFloat(longitude)};
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 17,
+          center: uluru
+        });
+        marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+     }
+    </script>
+    <script defer
+   	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdvA_P65kjSH0ZdEuchMWmxMfLQJkg9f0&callback=initMap">
+    </script>  
     <script>
 	function arrived()
 	{
@@ -66,16 +114,20 @@
 	   			$.get(
    					"/arrived", 
    					{
+   						userid: getParameterByName('key1', window.location.href), 
+   						questid: getParameterByName('key2', window.location.href), 					
    						latitude: startPos.coords.latitude,
    						longitude: startPos.coords.longitude
    					},	   					
 					function(data)
 					{
+   						/*$("#1").html(startPos.coords.latitude)
+   						$("#2").html(startPos.coords.longitude)*/
    						if(data == "true")
    						{
    							alert("Okay, answer the question please!");
    							$('#arr_call_back').css('display', 'none');
-   							$.ajax({ url: '/QuestionQuestion', type: 'GET', async: false, success: function (data) {$('#question-current').html(data);}});
+   							$.ajax({ url: '/QuestionQuestion', data: {userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)}, type: 'GET', async: false, success: function (data) {$('#question-current').html(data);}});
    							$('#question-form').css('display', 'block');						
    						}
    						else if(data == "false")
@@ -92,23 +144,19 @@
 	   		var geoOptions = { enableHighAccuracy: true };
 	   		navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);	
 	}
-	</script>
-
-    <hr>
-    <input type="button" value="Restart" onclick="tryagain()">
-     
+	</script>    
  <script>
  	function tryagain()
  	{
- 		$.ajax({ url: '/FromStart', type: 'GET', async: false});
- 	    $.get("/QuestionsDone",{},function(data){$('#questions-done').html(data);});
- 	    $.get("/QuestionsAmount",{},function(data){$('#questions-amount').html(data);});
+ 		$.ajax({ url: '/FromStart', type: 'GET', data: {userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)},  async: false});
+ 	    $.get("/QuestionsDone",{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)},function(data){$('#questions-done').html(data);});
+ 	    $.get("/QuestionsAmount",{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)},function(data){$('#questions-amount').html(data);});
  	   	$('#question-form').css('display', 'none');	 
  	   	$('#answ_call_back').val("");
 		var latitiude;
   	  	var longitude;
-		$.ajax({ url: '/Latitude', type: 'GET', async: false, success: function (data) {latitiude = data;}});
-		$.ajax({ url: '/Longitude', type: 'GET', async: false, success: function (data) {longitude = data;}}); 
+		$.ajax({ url: '/Latitude', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)},async: false, success: function (data) {latitiude = data;}});
+		$.ajax({ url: '/Longitude', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: function (data) {longitude = data;}}); 
 		changeMap(latitiude, longitude);
 		$('#arr_call_back').css('display', 'block');
  	}
@@ -120,20 +168,20 @@
     	$.ajax({ 
     		url: '/Answer', 
     		type: 'GET',
-			data : {answer: $('#answ_call_back').val()}, 
+			data : {answer: $('#answ_call_back').val(), userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)}, 
     		async: false, 
     		success: function (data) 
     		{
     			if(data == "true")
    				{
-    				$.ajax({ url: '/Next', type: 'GET', async: false, success: 
+    				$.ajax({ url: '/Next', type: 'GET',data: {userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: 
     					function (data) 
     					{
     						if(data == "false")
    							{
     							alert("You did it!")
-    							$.ajax({ url: '/FromStart', type: 'GET', async: false});
-    							$.ajax({ url: '/Complete', type: 'GET', async: false, success: function (data) {window.location.replace(data);}});
+    							$.ajax({ url: '/FromStart', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false});
+    							$.ajax({ url: '/Complete', type: 'GET',data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: function (data) {window.location.replace(data);}});
    							}
     						else
     						{
@@ -142,11 +190,11 @@
     							$('#answ_call_back').val("");
     							var latitiude;
     					   	  	var longitude;
-    							$.ajax({ url: '/Latitude', type: 'GET', async: false, success: function (data) {latitiude = data;}});
-    							$.ajax({ url: '/Longitude', type: 'GET', async: false, success: function (data) {longitude = data;}}); 
+    							$.ajax({ url: '/Latitude', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: function (data) {latitiude = data;}});
+    							$.ajax({ url: '/Longitude', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: function (data) {longitude = data;}}); 
     							changeMap(latitiude, longitude);
-    							$.get("/QuestionsDone",{},function(data){$('#questions-done').html(data);}) 
-    			     			$.get("/QuestionsAmount",{},function(data){$('#questions-amount').html(data);}) 
+    							$.get("/QuestionsDone",{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)},function(data){$('#questions-done').html(data);}) 
+    			     			$.get("/QuestionsAmount",{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)},function(data){$('#questions-amount').html(data);}) 
        							$('#arr_call_back').css('display', 'block');
     						}
    						}
@@ -155,7 +203,7 @@
     			else
    				{	
     				alert("Wrong answer, you lose")
-    				$.ajax({ url: '/Failed', type: 'GET', async: false, success: function (data) {window.location.replace(data);}});
+    				$.ajax({ url: '/Failed', type: 'GET', data:{userid: getParameterByName('key1', window.location.href), questid: getParameterByName('key2', window.location.href)} , async: false, success: function (data) {window.location.replace(data);}});
    				}
     		}
     	});
@@ -170,31 +218,8 @@
 	    map.panTo(latlng);
 	 }
 	</script>
-	<script>
-		
-	</script>
-    <script>
-      var marker;
-      var map;
-      function initMap() { 	
-   	  	var latitiude;
-   	  	var longitude;
-		$.ajax({ url: '/Latitude', type: 'GET', async: false, success: function (data) {latitiude = data;}});
-		$.ajax({ url: '/Longitude', type: 'GET', async: false, success: function (data) {longitude = data;}});   	
-        var uluru = {lat: parseFloat(latitiude), lng: parseFloat(longitude)};
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 17,
-          center: uluru
-        });
-        marker = new google.maps.Marker({
-          position: uluru,
-          map: map
-        });
-      }
-    </script>
-    <script defer
-   	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAemSVT-gnTxYy3pfVPgt-QmnaQBFNOyxE&callback=initMap">
-    </script>
+
+   
     
   </body>
 </html>

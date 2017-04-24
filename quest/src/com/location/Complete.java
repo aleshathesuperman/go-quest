@@ -14,13 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class Complete extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {		
-		
+		int userid = Integer.parseInt(req.getParameter("userid"));
+		int questid = Integer.parseInt(req.getParameter("questid"));
 		Random r = new Random();
 		int multipliers =  r.nextInt(1000) + 1; 
-		int user_id = QuestData.userId() * multipliers; 
-		int quest_id = QuestData.questId() * multipliers; 
+		int user_id = userid * multipliers; 
+		int quest_id = questid * multipliers; 
 		int success = 1 + multipliers; 
 		String mult = sha1(Integer.toString(multipliers));
+		
+		
 		
 		PrintWriter out = res.getWriter();
 		out.print("https://go-quest.000webhostapp.com/result/default/index?key1=" 
